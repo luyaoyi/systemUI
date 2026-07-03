@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>汽车票复购立减后台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">M</span>
+        <div>
+          <strong>营销活动</strong>
+          <small>定制活动后台</small>
+        </div>
+      </div>
+      <nav class="side-nav" aria-label="主导航">
+        <div class="menu-group">
+          <button class="side-item parent-item" type="button" title="汽车票下一程立减">
+            <span class="nav-icon">B</span>
+            <span>汽车票下一程立减</span>
+          </button>
+          <div class="sub-nav">
+            <button class="side-item sub-item active" data-page="manage" title="活动管理">
+              <span class="sub-dot"></span>
+              <span>活动管理</span>
+            </button>
+            <button class="side-item sub-item" data-page="form" title="活动配置">
+              <span class="sub-dot"></span>
+              <span>活动配置</span>
+            </button>
+            <button class="side-item sub-item" data-page="data" title="活动数据">
+              <span class="sub-dot"></span>
+              <span>活动数据</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <div class="breadcrumb">营销活动 / 定制活动 / 汽车票复购立减</div>
+          <h1 id="pageTitle">活动管理</h1>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" title="刷新" aria-label="刷新" id="refreshBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11a8.1 8.1 0 0 0-15.5-3m-.5-4v4.5h4.5" />
+              <path d="M4 13a8.1 8.1 0 0 0 15.5 3m.5 4v-4.5h-4.5" />
+            </svg>
+          </button>
+          <button class="primary-btn" id="createBtn">新建活动</button>
+        </div>
+      </header>
+
+      <section class="page page-active" id="managePage" aria-labelledby="pageTitle">
+        <section class="panel filter-panel">
+          <div class="filter-grid">
+            <label>
+              <span>活动名称 / Code</span>
+              <input id="filterKeyword" type="text" placeholder="输入活动名称或 Code" />
+            </label>
+            <label>
+              <span>活动状态</span>
+              <select id="filterStatus">
+                <option value="">全部</option>
+                <option>有效</option>
+                <option>无效</option>
+              </select>
+            </label>
+            <label>
+              <span>渠道</span>
+              <select id="filterChannel">
+                <option value="">全部</option>
+                <option>同程主小程序(852)</option>
+                <option>同程APP-IOS(433)</option>
+                <option>同程APP-安卓(434)</option>
+              </select>
+            </label>
+            <label>
+              <span>创建人</span>
+              <input id="filterOwner" type="text" placeholder="输入创建人" />
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button class="primary-btn" id="searchBtn">查询</button>
+            <button class="ghost-btn" id="resetBtn">重置</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>活动列表</h2>
+              <p>按优先级和更新时间决定第一单查询命中顺序</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>活动名称</th>
+                  <th>活动 Code</th>
+                  <th>活动时间</th>
+                  <th>渠道</th>
+                  <th>立减金额</th>
+                  <th>有效天数</th>
+                  <th>优先级</th>
+                  <th>参与权益数</th>
+                  <th>待使用</th>
+                  <th>已使用</th>
+                  <th>更新时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="activityTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" id="formPage">
+        <form class="activity-form" id="activityForm">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>基础信息</h2>
+                <p>活动 Code 保存后由系统自动生成</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span><em class="req">*</em>活动名称</span>
+                <input name="activityName" required />
+              </label>
+              <label>
+                <span><em class="req">*</em>活动状态</span>
+                <select name="activityStatus" required>
+                  <option value="">请选择活动状态</option>
+                  <option>有效</option>
+                  <option>无效</option>
+                </select>
+              </label>
+              <label>
+                <span><em class="req">*</em>业务类型</span>
+                <select name="businessType" disabled>
+                  <option>汽车票</option>
+                </select>
+              </label>
+              <label class="double-col">
+                <span><em class="req">*</em>有效期</span>
+                <div class="range-fields">
+                  <input name="startTime" type="datetime-local" required />
+                  <span class="range-separator">至</span>
+                  <input name="endTime" type="datetime-local" required />
+                </div>
+              </label>
+              <label>
+                <span><em class="req">*</em>优先级</span>
+                <input name="priority" type="number" min="1" max="99999" required />
+                <small class="field-help">数字越大越优先，数值范围 1～99999。</small>
+              </label>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>活动限制</h2>
+                <p>限制条件同时满足后才允许第一单参与</p>
+              </div>
+            </div>
+            <div class="limit-grid">
+              <div class="field-block wide">
+                <span class="field-title"><em class="req">*</em>渠道限制</span>
+                <div class="check-row">
+                  <label><input type="checkbox" /> 同程主小程序(852)</label>
+                  <label><input type="checkbox" /> 同程APP-IOS(433)</label>
+                  <label><input type="checkbox" /> 同程APP-安卓(434)</label>
+                </div>
+              </div>
+              <div class="field-block wide">
+                <span class="field-title">用户参与次数 <em class="opt">选填</em></span>
+                <div class="check-row quota-options">
+                  <label><input type="checkbox" data-quota="total" /> 每人总计可参与次数</label>
+                  <label><input type="checkbox" data-quota="month" /> 每人每月可参与次数</label>
+                  <label><input type="checkbox" data-quota="week" /> 每人每周可参与次数</label>
+                  <label><input type="checkbox" data-quota="day" /> 每人每日可参与次数</label>
+                </div>
+                <div class="quota-grid">
+                  <label class="hidden" data-quota-panel="total">
+                    <span><em class="req">*</em>每人总计可参与次数</span>
+                    <input type="number" min="1" max="99" />
+                    <small class="field-help">数值范围 1～99。</small>
+                  </label>
+                  <label class="hidden" data-quota-panel="month">
+                    <span><em class="req">*</em>每人每月可参与次数</span>
+                    <input type="number" min="1" max="99" />
+                    <small class="field-help">自然月统计，数值范围 1～99。</small>
+                  </label>
+                  <label class="hidden" data-quota-panel="week">
+                    <span><em class="req">*</em>每人每周可参与次数</span>
+                    <input type="number" min="1" max="99" />
+                    <small class="field-help">自然周统计，数值范围 1～99。</small>
+                  </label>
+                  <label class="hidden" data-quota-panel="day">
+                    <span><em class="req">*</em>每人每日可参与次数</span>
+                    <input type="number" min="1" max="99" />
+                    <small class="field-help">数值范围 1～99。</small>
+                  </label>
+                </div>
+                <small class="field-help">各维度相互独立；未选择的维度默认不限制。</small>
+              </div>
+              <div class="field-block wide">
+                <span class="field-title">限制条件 <em class="opt">选填</em></span>
+                <div class="check-row condition-options">
+                  <label><input type="checkbox" data-condition="refid" /> refid</label>
+                  <label><input type="checkbox" data-condition="lineTag" /> 线路标签</label>
+                  <label><input type="checkbox" data-condition="cityPair" /> 起抵城市</label>
+                  <label><input type="checkbox" data-condition="singleFare" /> 单人票价</label>
+                  <label><input type="checkbox" data-condition="prophetCrowd" /> 先知人群</label>
+                  <label><input type="checkbox" data-condition="rulaiCrowd" /> 如来人群</label>
+                  <label><input type="checkbox" data-condition="ab" /> AB 实验限制</label>
+                </div>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="refid">
+                <h3>refid 配置</h3>
+                <label>
+                  <span>refid</span>
+                  <input placeholder="请输入 refid，多个用英文逗号分隔" />
+                </label>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="lineTag">
+                <div class="condition-title-row">
+                  <h3>线路标签配置</h3>
+                  <button type="button" class="ghost-btn compact" data-add-line-tag>+ 添加标签条件</button>
+                </div>
+                <div class="tag-rule-list">
+                  <div class="tag-rule-row">
+                    <div class="search-select" data-multi-select data-placeholder="搜索并选择线路标签">
+                      <div class="search-select-tags" data-multi-tags></div>
+                      <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择线路标签" />
+                      <div class="search-select-menu" data-multi-menu>
+                        <button type="button" class="search-select-option" data-multi-option data-value="热门线路">热门线路</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="跨城通勤">跨城通勤</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="机场高铁接驳">机场高铁接驳</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="节假日高需求">节假日高需求</button>
+                      </div>
+                    </div>
+                    <div class="logic-choice" aria-label="标签内关系">
+                      <label><input type="radio" name="lineTagLogic1" /> 且</label>
+                      <label><input type="radio" name="lineTagLogic1" /> 或</label>
+                    </div>
+                    <button type="button" class="icon-text-btn" title="删除" data-remove-line-tag>×</button>
+                  </div>
+                  <div class="group-separator"><span>或</span></div>
+                  <div class="tag-rule-row">
+                    <div class="search-select" data-multi-select data-placeholder="搜索并选择线路标签">
+                      <div class="search-select-tags" data-multi-tags></div>
+                      <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择线路标签" />
+                      <div class="search-select-menu" data-multi-menu>
+                        <button type="button" class="search-select-option" data-multi-option data-value="热门线路">热门线路</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="跨城通勤">跨城通勤</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="机场高铁接驳">机场高铁接驳</button>
+                        <button type="button" class="search-select-option" data-multi-option data-value="节假日高需求">节假日高需求</button>
+                      </div>
+                    </div>
+                    <div class="logic-choice" aria-label="标签内关系">
+                      <label><input type="radio" name="lineTagLogic2" /> 且</label>
+                      <label><input type="radio" name="lineTagLogic2" /> 或</label>
+                    </div>
+                    <button type="button" class="icon-text-btn" title="删除" data-remove-line-tag>×</button>
+                  </div>
+                </div>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="cityPair">
+                <div class="condition-title-row">
+                  <h3>起抵城市配置</h3>
+                  <button type="button" class="ghost-btn compact" data-add-city-combo>+ 添加组合</button>
+                </div>
+                <div class="city-combo-list">
+                  <div class="city-combo-card">
+                    <label>
+                      <span>出发类型</span>
+                      <select>
+                        <option>地级市</option>
+                        <option>站点归属城市</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>出发地级市</span>
+                      <div class="search-select" data-multi-select data-placeholder="搜索并选择地级市">
+                        <div class="search-select-tags" data-multi-tags></div>
+                        <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择地级市" />
+                        <div class="search-select-menu" data-multi-menu>
+                          <button type="button" class="search-select-option" data-multi-option data-value="苏州-001">苏州-001</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="上海-002">上海-002</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="杭州-003">杭州-003</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="南京-004">南京-004</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="无锡-005">无锡-005</button>
+                        </div>
+                      </div>
+                    </label>
+                    <span class="flow-arrow">→</span>
+                    <label>
+                      <span>到达类型</span>
+                      <select>
+                        <option>站点归属城市</option>
+                        <option>地级市</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>到达站点归属城市</span>
+                      <div class="search-select" data-multi-select data-placeholder="搜索并选择站点归属城市">
+                        <div class="search-select-tags" data-multi-tags></div>
+                        <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择站点归属城市" />
+                        <div class="search-select-menu" data-multi-menu>
+                          <button type="button" class="search-select-option" data-multi-option data-value="上海-002">上海-002</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="苏州-001">苏州-001</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="杭州-003">杭州-003</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="南京-004">南京-004</button>
+                        </div>
+                      </div>
+                    </label>
+                    <button type="button" class="icon-text-btn" title="删除" data-remove-city-combo>×</button>
+                  </div>
+                  <div class="city-combo-card">
+                    <label>
+                      <span>出发类型</span>
+                      <select>
+                        <option>地级市</option>
+                        <option>站点归属城市</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>出发地级市</span>
+                      <div class="search-select" data-multi-select data-placeholder="搜索并选择地级市">
+                        <div class="search-select-tags" data-multi-tags></div>
+                        <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择地级市" />
+                        <div class="search-select-menu" data-multi-menu>
+                          <button type="button" class="search-select-option" data-multi-option data-value="苏州-001">苏州-001</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="上海-002">上海-002</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="杭州-003">杭州-003</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="南京-004">南京-004</button>
+                        </div>
+                      </div>
+                    </label>
+                    <span class="flow-arrow">→</span>
+                    <label>
+                      <span>到达类型</span>
+                      <select>
+                        <option>地级市</option>
+                        <option>站点归属城市</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>到达地级市</span>
+                      <div class="search-select" data-multi-select data-placeholder="搜索并选择地级市">
+                        <div class="search-select-tags" data-multi-tags></div>
+                        <input type="text" class="search-select-input" data-multi-input placeholder="搜索并选择地级市" />
+                        <div class="search-select-menu" data-multi-menu>
+                          <button type="button" class="search-select-option" data-multi-option data-value="上海-002">上海-002</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="苏州-001">苏州-001</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="杭州-003">杭州-003</button>
+                          <button type="button" class="search-select-option" data-multi-option data-value="南京-004">南京-004</button>
+                        </div>
+                      </div>
+                    </label>
+                    <button type="button" class="icon-text-btn" title="删除" data-remove-city-combo>×</button>
+                  </div>
+                </div>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="singleFare">
+                <h3>单人票价配置</h3>
+                <label>
+                  <span>单人票价下限</span>
+                  <div class="money-input">
+                    <span>元</span>
+                    <input type="number" min="0" step="0.01" placeholder="请输入单人票价下限" data-condition-required />
+                  </div>
+                </label>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="prophetCrowd">
+                <h3>先知人群配置</h3>
+                <div class="crowd-config-grid">
+                  <label>
+                    <span>先知场景</span>
+                    <select>
+                      <option>汽车票复购预测场景</option>
+                      <option>出行偏好识别场景</option>
+                      <option>价格敏感识别场景</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>场景下的人群</span>
+                    <select>
+                      <option>高复购概率人群</option>
+                      <option>近 90 天购票用户</option>
+                      <option>高价值出行用户</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="rulaiCrowd">
+                <h3>如来人群配置</h3>
+                <div class="crowd-config-grid">
+                  <label>
+                    <span>如来场景</span>
+                    <select disabled>
+                      <option>人群标签</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>如来标签</span>
+                    <select>
+                      <option>汽车票高价值用户</option>
+                      <option>近 30 天汽车票用户</option>
+                      <option>跨城通勤偏好用户</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="condition-panel wide hidden" data-condition-panel="ab">
+                <h3>AB 实验限制配置</h3>
+                <div class="ab-config-row">
+                  <label>
+                    <span>实验 ID</span>
+                    <input data-ab-experiment-id />
+                  </label>
+                  <button type="button" class="ghost-btn compact" data-fetch-ab-groups>获取分组</button>
+                  <label>
+                    <span>实验分组</span>
+                    <select data-ab-groups>
+                      <option value="">请先获取分组</option>
+                    </select>
+                  </label>
+                </div>
+                <small class="field-help" data-ab-help>输入实验号后点击获取分组，后台调用接口返回可配置分组。</small>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>活动规则</h2>
+                <p>权益金额和有效期在权益生成时固化</p>
+              </div>
+            </div>
+            <div class="rule-layout vertical">
+              <div class="rule-card">
+                <h3>立减权益</h3>
+                <label>
+                  <span>立减金额</span>
+                  <div class="money-input"><span>¥</span><input type="number" min="0.01" step="0.01" data-discount-input /></div>
+                </label>
+                <label>
+                  <span>确认立减金额</span>
+                  <div class="money-input"><span>¥</span><input type="number" min="0.01" step="0.01" placeholder="请再次输入立减金额" data-discount-confirm /></div>
+                </label>
+                <div class="amount-check">
+                  <span class="amount-cn" data-discount-cn></span>
+                  <span class="amount-status" data-discount-status>请输入立减金额并二次确认。</span>
+                </div>
+                <div class="readonly-list">
+                  <span>生成时机：第一单参与成功</span>
+                  <span>生效时机：第一单已出行</span>
+                  <span>使用场景：第二单复购里程立减</span>
+                </div>
+              </div>
+              <div class="rule-card">
+                <h3>权益有效期</h3>
+                <label>
+                  <span>权益有效天数</span>
+                  <input type="number" min="1" />
+                </label>
+                <div class="readonly-list">
+                  <span>过期时间口径：默认第 N 天 23:59:59 过期</span>
+                  <span>过期任务：待使用且超时流转为已过期</span>
+                </div>
+              </div>
+              <div class="rule-card">
+                <h3>领取活动配置</h3>
+                <div class="switch-line">
+                  <span class="field-title">发放代金券</span>
+                  <label class="switch"><input type="checkbox" data-coupon-toggle /><span></span></label>
+                </div>
+                <div class="coupon-config hidden" data-coupon-config>
+                  <label>
+                    <span>领取活动</span>
+                    <div class="search-select claim-activity-select" data-claim-select>
+                      <input type="text" class="search-select-input" placeholder="请输入领取活动code" data-claim-activity-input />
+                      <div class="search-select-menu" data-claim-menu>
+                        <button type="button" class="search-select-option" data-claim-option data-value="CLAIM_BUS_REBUY_5" data-name="汽车票下一程立减领取活动">CLAIM_BUS_REBUY_5｜汽车票下一程立减领取活动</button>
+                        <button type="button" class="search-select-option" data-claim-option data-value="CLAIM_BUS_REBUY_10" data-name="汽车票复购 10 元领取活动">CLAIM_BUS_REBUY_10｜汽车票复购 10 元领取活动</button>
+                        <button type="button" class="search-select-option" data-claim-option data-value="CLAIM_BUS_RETURN" data-name="汽车票返程优惠领取活动">CLAIM_BUS_RETURN｜汽车票返程优惠领取活动</button>
+                        <button type="button" class="search-select-option" data-claim-option data-value="CLAIM_BUS_WEEKEND" data-name="周末出行加码领取活动">CLAIM_BUS_WEEKEND｜周末出行加码领取活动</button>
+                        <button type="button" class="search-select-option" data-claim-option data-value="CLAIM_BUS_MEMBER" data-name="会员专享复购领取活动">CLAIM_BUS_MEMBER｜会员专享复购领取活动</button>
+                      </div>
+                    </div>
+                  </label>
+                  <div class="claim-prize-list hidden" data-claim-prizes>
+                    <div class="claim-prize-head">
+                      <span>奖品名称</span>
+                      <span>优惠类型</span>
+                      <span>价值</span>
+                      <span>使用门槛</span>
+                    </div>
+                    <div data-claim-prize-rows></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>前端样式</h2>
+                <p>用于第一单活动展示文案和样式配置</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label class="full-row">
+                <span>活动说明 <em class="opt">选填</em></span>
+                <textarea name="remark" rows="3"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <div class="sticky-actions">
+            <button type="button" class="ghost-btn" data-page="manage">取消</button>
+            <button type="submit" class="primary-btn">保存</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="page" id="dataPage">
+        <section class="panel filter-panel">
+          <div class="filter-grid data-filter">
+            <label>
+              <span>权益 ID</span>
+              <input id="benefitKeyword" placeholder="精确查询" />
+            </label>
+            <label>
+              <span>mid</span>
+              <input id="userKeyword" placeholder="输入 mid" />
+            </label>
+            <label>
+              <span>第一单订单号</span>
+              <input id="firstOrderKeyword" placeholder="精确查询" />
+            </label>
+            <label>
+              <span>第二单订单号</span>
+              <input id="secondOrderKeyword" placeholder="精确查询" />
+            </label>
+            <label>
+              <span>权益状态</span>
+              <select id="benefitStatusFilter">
+                <option value="">全部</option>
+                <option>初始化</option>
+                <option>待使用</option>
+                <option>已使用</option>
+                <option>已过期</option>
+                <option>已无效</option>
+                <option>异常</option>
+              </select>
+            </label>
+            <label>
+              <span>发券状态</span>
+              <select id="couponStatusFilter">
+                <option value="">全部</option>
+                <option>未发放</option>
+                <option>成功</option>
+                <option>失败</option>
+              </select>
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button class="primary-btn" id="dataSearchBtn">查询</button>
+            <button class="ghost-btn" id="dataResetBtn">重置</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>参与记录</h2>
+              <p>按权益状态、订单号和代金券发放结果排查完整链路</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>权益 ID</th>
+                  <th>mid</th>
+                  <th>第一单订单号</th>
+                  <th>第二单订单号</th>
+                  <th>渠道</th>
+                  <th>权益金额</th>
+                  <th>权益状态</th>
+                  <th>发券状态</th>
+                  <th>参与时间</th>
+                  <th>生效时间</th>
+                  <th>过期时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="benefitTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="drawer-mask" id="drawerMask"></div>
+    <aside class="drawer" id="detailDrawer" aria-label="权益详情">
+      <div class="drawer-head">
+        <div>
+          <h2>权益详情</h2>
+          <p id="drawerSubTitle">-</p>
+        </div>
+        <button class="icon-btn" id="drawerClose" title="关闭">X</button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </aside>
+
+    <div class="toast" id="toast"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
