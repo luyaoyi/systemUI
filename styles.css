@@ -625,23 +625,36 @@ tbody tr:hover {
 
 .search-select {
   position: relative;
-  min-height: 74px;
-  padding: 8px 10px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #ffffff;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
-.search-select.open {
+.search-select.open .search-select-input {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 .search-select-tags {
+  z-index: 1;
+  grid-area: 1 / 1;
+  align-self: center;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  min-width: 0;
+  max-width: calc(100% - 118px);
+  padding-left: 10px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.search-select-tags:empty {
+  display: none;
+}
+
+.search-select-tags:not(:empty) + .search-select-input {
+  padding-left: min(48%, 210px);
 }
 
 .search-select-tag {
@@ -664,31 +677,58 @@ tbody tr:hover {
   font-size: 14px;
   line-height: 1;
   padding: 0;
+  pointer-events: auto;
+}
+
+.search-select-more {
+  flex: 0 0 auto;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 24px;
 }
 
 .search-select-input {
-  min-height: 28px;
-  border: 0;
-  padding: 0;
-  box-shadow: none;
+  grid-area: 1 / 1;
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #ffffff;
 }
 
 .search-select-input:focus {
-  box-shadow: none;
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 .search-select-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
   display: none;
   max-height: 144px;
-  margin-top: 8px;
   overflow: auto;
-  border-top: 1px solid var(--soft-line);
-  padding-top: 8px;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(31, 41, 55, 0.14);
+  padding: 8px;
 }
 
 .search-select.open .search-select-menu {
   display: grid;
   gap: 6px;
+}
+
+.priority-field {
+  max-width: 360px;
 }
 
 .search-select-option {

@@ -417,12 +417,14 @@ function renderMultiSelect(wrapper) {
   const input = wrapper.querySelector("[data-multi-input]");
   const selected = [...wrapper.querySelectorAll("[data-multi-option].selected")].map((option) => option.dataset.value);
   if (!tags || !input) return;
-  tags.innerHTML = selected
-    .map(
+  const visibleSelected = selected.slice(0, 2);
+  tags.innerHTML = [
+    ...visibleSelected.map(
       (value) =>
         `<span class="search-select-tag">${value}<button type="button" data-multi-remove data-value="${value}">×</button></span>`
-    )
-    .join("");
+    ),
+    selected.length > visibleSelected.length ? `<span class="search-select-more">+${selected.length - visibleSelected.length}</span>` : ""
+  ].join("");
   input.placeholder = selected.length ? "继续搜索并选择" : wrapper.dataset.placeholder || "搜索并选择";
 }
 
