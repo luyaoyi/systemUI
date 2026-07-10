@@ -311,6 +311,10 @@ textarea {
   gap: 8px;
 }
 
+.compact-upload {
+  max-width: 560px;
+}
+
 .image-upload-box {
   position: relative;
   display: grid;

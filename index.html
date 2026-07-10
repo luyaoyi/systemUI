@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>汽车票复购立减后台</title>
-    <link rel="stylesheet" href="./styles.css?v=20260710-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260710-2" />
   </head>
   <body>
     <aside class="sidebar">
@@ -528,30 +528,17 @@
                 <span>活动说明 <em class="opt">选填</em></span>
                 <textarea name="remark" rows="3"></textarea>
               </label>
-              <div class="full-row upload-grid">
-                <label class="upload-field">
-                  <span>book15 icon <em class="opt">选填</em></span>
-                  <div class="image-upload-box">
-                    <input name="book15Icon" type="file" accept="image/*" />
-                    <div class="upload-placeholder">
-                      <strong>+</strong>
-                      <span>上传图片</span>
-                      <small>建议 PNG / JPG，1:1 透明底图</small>
-                    </div>
+              <label class="full-row upload-field compact-upload">
+                <span>book15 / book2banner 位 icon <em class="opt">选填</em></span>
+                <div class="image-upload-box">
+                  <input name="bookCommonIcon" type="file" accept="image/*" />
+                  <div class="upload-placeholder">
+                    <strong>+</strong>
+                    <span>上传图片</span>
+                    <small>book15 与 book2banner 共用，建议 PNG / JPG</small>
                   </div>
-                </label>
-                <label class="upload-field">
-                  <span>book2banner 位 icon <em class="opt">选填</em></span>
-                  <div class="image-upload-box">
-                    <input name="book2BannerIcon" type="file" accept="image/*" />
-                    <div class="upload-placeholder">
-                      <strong>+</strong>
-                      <span>上传图片</span>
-                      <small>建议 PNG / JPG，适配 banner 展示</small>
-                    </div>
-                  </div>
-                </label>
-              </div>
+                </div>
+              </label>
             </div>
           </section>
 
@@ -654,6 +641,6 @@
     </aside>
 
     <div class="toast" id="toast"></div>
-    <script src="./app.js?v=20260710-1"></script>
+    <script src="./app.js?v=20260710-2"></script>
   </body>
 </html>
